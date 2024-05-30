@@ -1,8 +1,6 @@
 #pragma once
 
-#include <cmath>
-#include <iostream>
-#include <limits>
+#include "Common.h"
 
 template<typename T>
 class tVec3
@@ -39,7 +37,7 @@ public:
 
     T operator[](int i) const { return vec[i]; }
     T& operator[](int i) { return vec[i]; }
-    tVec3 operator-() { return tVec3(-x, -y, -z); }
+    tVec3 operator-() const { return tVec3(-x, -y, -z); }
     tVec3& operator+=(const tVec3& v)
     {
         x += v.x;
