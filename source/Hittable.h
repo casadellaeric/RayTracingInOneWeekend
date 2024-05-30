@@ -37,5 +37,5 @@ public:
 
     virtual ~Hittable() = default;
 
-    virtual std::optional<Hit> test_hit(const Ray& ray, double tMin, double tMax) const = 0;
+    virtual std::optional<Hit> test_hit(const Ray& ray, const Interval& interval) const = 0;
 };

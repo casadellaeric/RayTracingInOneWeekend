@@ -127,13 +127,3 @@ tVec3<T> cross(const tVec3<T>& u, const tVec3<T>& v)
 {
     return { u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x };
 }
-
-inline tVec3<int> to_rgb(const tVec3<double>& vec)
-{
-    tVec3<int> rgb{
-        static_cast<int>(vec.x * (256. - std::numeric_limits<double>::epsilon() * 256.)),
-        static_cast<int>(vec.y * (256. - std::numeric_limits<double>::epsilon() * 256.)),
-        static_cast<int>(vec.z * (256. - std::numeric_limits<double>::epsilon() * 256.)),
-    };
-    return rgb;
-}

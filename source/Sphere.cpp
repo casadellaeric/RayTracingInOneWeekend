@@ -1,6 +1,6 @@
 #include "Sphere.h"
 
-std::optional<Hit> Sphere::test_hit(const Ray& ray, double tMin, double tMax) const
+std::optional<Hit> Sphere::test_hit(const Ray& ray, const Interval& interval) const
 {
     // 2nd degree eq.
     const auto& d{ ray.get_direction() };
@@ -19,11 +19,10 @@ std::optional<Hit> Sphere::test_hit(const Ray& ray, double tMin, double tMax) co
     const double t1{ (h + sqrtDiscriminant) / a };
     const double t2{ (h - sqrtDiscriminant) / a };
     const double t{ std::min(t1, t2) };
-    if (t < tMin || t > tMax) {
+    if (!interval.contains(t)) {
         return std::nullopt;
     }
 
     const Vec3 point = ray.at(t);
-    Hit hit(point, (point - m_center) / m_radius, t, ray);
-    return hit;
+    return Hit(point, (point - m_center) / m_radius, t, ray);
 }

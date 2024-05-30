@@ -12,7 +12,7 @@ public:
     {
     }
 
-    std::optional<Hit> test_hit(const Ray& ray, double tMin, double tMax) const override;
+    std::optional<Hit> test_hit(const Ray& ray, const Interval& interval) const override;
 
 private:
 
