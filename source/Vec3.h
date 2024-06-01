@@ -63,6 +63,11 @@ public:
 
     double length() const { return std::sqrt(x * x + y * y + z * z); }
     double length2() const { return x * x + y * y + z * z; }
+    bool near_zero() const
+    {
+        auto smallValue{ 1e-8 };
+        return std::fabs(x) < smallValue && std::fabs(y) < smallValue && std::fabs(z) < smallValue;
+    }
     tVec3 normalized() const { return *this / length(); }
 };
 
@@ -126,4 +131,9 @@ template<typename T>
 tVec3<T> cross(const tVec3<T>& u, const tVec3<T>& v)
 {
     return { u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x };
+}
+
+inline Vec3 reflect(const Vec3& v, const Vec3& n)
+{
+    return v - 2 * dot(v, n) * n;
 }

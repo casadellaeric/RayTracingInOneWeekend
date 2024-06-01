@@ -4,9 +4,14 @@ class Ray
 {
 public:
 
+    Ray() :
+      m_origin{},
+      m_direction{}
+    {
+    }
     Ray(const Vec3& origin, const Vec3& direction) :
-      m_origin(origin),
-      m_direction(direction){};
+      m_origin{ origin },
+      m_direction{ direction } {};
     ~Ray() = default;
 
     const Vec3& get_origin() const { return m_origin; }

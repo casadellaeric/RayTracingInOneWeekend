@@ -24,5 +24,5 @@ std::optional<Hit> Sphere::test_hit(const Ray& ray, const Interval& interval) co
     }
 
     const Vec3 point = ray.at(t);
-    return Hit(point, (point - m_center) / m_radius, t, ray);
+    return Hit(point, (point - m_center) / m_radius, m_material, t, ray);
 }

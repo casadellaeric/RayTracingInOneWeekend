@@ -12,6 +12,7 @@
 
 #include "Vec3.h"
 #include "Ray.h"
+#include "Interval.h"
 
 #ifndef NDEBUG
 constexpr auto WRITE_TO_IMAGE = false;
@@ -21,32 +22,8 @@ constexpr auto WRITE_TO_IMAGE = true;
 
 namespace rt
 {
-constexpr double INF{ std::numeric_limits<double>::infinity() };
+inline constexpr double INF{ std::numeric_limits<double>::infinity() };
 }
-
-struct Interval {
-    Interval() :
-      min(rt::INF),
-      max(-rt::INF)
-    {
-    }
-
-    constexpr Interval(double min, double max) :
-      min(min),
-      max(max)
-    {
-    }
-
-    constexpr double size() const { return max - min; }
-    constexpr bool contains(double t) const { return t >= min && t <= max; }
-    constexpr bool surrounds(double t) const { return t > min && t < max; }
-
-    const double min, max;
-    static const Interval empty, universe;
-};
-
-inline constexpr Interval Interval::empty{ Interval(rt::INF, -rt::INF) };
-inline constexpr Interval Interval::universe{ Interval(-rt::INF, rt::INF) };
 
 namespace rt
 {
@@ -69,9 +46,38 @@ inline double random_double()
     return dist(rng);
 }
 
+inline double random_double_normal()
+{
+    static std::normal_distribution<double> dist(0., 1.);
+    static std::mt19937_64 rng;
+    return dist(rng);
+}
+
 inline double random_double(double min, double max)
 {
     return min + random_double() * (max - min);
+}
+
+inline Vec3 random_vec()
+{
+    return Vec3(random_double(), random_double(), random_double());
+}
+
+inline Vec3 random_vec(double min, double max)
+{
+    return Vec3(random_double(min, max), random_double(min, max), random_double(min, max));
+}
+
+inline Vec3 random_vec_unit_sphere()
+{
+    return Vec3(random_double_normal(), random_double_normal(), random_double_normal())
+        .normalized();
+}
+
+inline Vec3 random_vec_hempsphere(const Vec3& normal)
+{
+    Vec3 rVec{ random_vec_unit_sphere() };
+    return dot(rVec, normal) >= 0. ? rVec : -rVec;
 }
 
 inline double degrees_to_radians(double degrees)
@@ -79,13 +85,18 @@ inline double degrees_to_radians(double degrees)
     return degrees * std::numbers::pi / 180.0;
 }
 
+inline double linear_to_gamma(double linearVal)
+{
+    return linearVal > 0. ? std::sqrt(linearVal) : 0.;
+}
+
 inline tVec3<int> to_rgb(const tVec3<double>& vec)
 {
     static const Interval colorRange(0., 1. - std::numeric_limits<double>::epsilon());
     tVec3<int> rgb{
-        static_cast<int>(rt::clamp(vec.x, colorRange) * 256.),
-        static_cast<int>(rt::clamp(vec.y, colorRange) * 256.),
-        static_cast<int>(rt::clamp(vec.z, colorRange) * 256.),
+        static_cast<int>(rt::clamp(linear_to_gamma(vec.x), colorRange) * 256.),
+        static_cast<int>(rt::clamp(linear_to_gamma(vec.y), colorRange) * 256.),
+        static_cast<int>(rt::clamp(linear_to_gamma(vec.z), colorRange) * 256.),
     };
     return rgb;
 }

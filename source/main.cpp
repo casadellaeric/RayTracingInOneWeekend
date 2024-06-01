@@ -4,18 +4,36 @@
 #include "Sphere.h"
 #include "HittableList.h"
 #include "Camera.h"
+#include "Material.h"
 
 int main()
 {
     // Scene
 
     HittableList scene{};
-    scene.add(std::make_shared<Sphere>(Sphere({ 0., 0., -1. }, 0.5)));
-    scene.add(std::make_shared<Sphere>(Sphere({ 0, -100.5, -1 }, 100.)));
+
+    auto materialGround{ std::make_shared<Lambertian>(Vec3(0.8, 0.8, 0.0)) };
+    auto materialCenter{ std::make_shared<Lambertian>(Vec3(0.1, 0.2, 0.5)) };
+    auto materialLeft{ std::make_shared<Metal>(Vec3(0.8, 0.8, 0.8)) };
+    auto materialRight{ std::make_shared<Metal>(Vec3(0.8, 0.6, 0.2)) };
+
+    scene.add(std::make_shared<Sphere>(Sphere({ 0.0, -100.5, -1.0 }, 100.0, materialGround)));
+    scene.add(std::make_shared<Sphere>(Sphere({ 0.0, 0.0, -1.2 }, 0.5, materialCenter)));
+    scene.add(std::make_shared<Sphere>(Sphere({ -1.0, 0., -1.0 }, 0.5, materialLeft)));
+    scene.add(std::make_shared<Sphere>(Sphere({ 1.0, 0., -1.0 }, 0.5, materialRight)));
 
     // Render
 
-    Camera camera(Vec3(0., 0., 0.), 16. / 9., 720, 2., 1., 10);
+    CameraParams params{
+        .position       = Vec3(0., 0., 0.),
+        .aspectRatio    = 16. / 9.,
+        .imageHeight    = 720,
+        .viewportHeight = 2.,
+        .focalLength    = 1.,
+        .numSamples     = 50,
+        .maxRayDepth    = 10,
+    };
+    Camera camera{ params };
 
     auto t0{ std::chrono::steady_clock::now() };
     camera.render(scene);

@@ -2,22 +2,34 @@
 
 #include "Common.h"
 
+class Material;
+
 enum class HitType { back = false, front = true };
 
 struct Hit {
-    Hit(const Vec3& point, const Vec3& normal, double t, const Ray& ray) :
-      point(point),
-      normal(type == HitType::front ? normal : -normal),
-      t(t),
-      type(static_cast<HitType>(dot(normal, ray.get_direction()) <= 0.))
+    Hit(const Vec3& point,
+        const Vec3& normal,
+        std::shared_ptr<Material> material,
+        double t,
+        const Ray& ray) :
+      type{ static_cast<HitType>(dot(normal, ray.get_direction()) <= 0.) },
+      point{ point },
+      normal{ type == HitType::front ? normal : -normal },
+      material{ material },
+      t{ t }
     {
     }
 
-    Hit(const Vec3& point, const Vec3& normal, double t, HitType type) :
-      point(point),
-      normal(normal),
-      t(t),
-      type(type)
+    Hit(const Vec3& point,
+        const Vec3& normal,
+        std::shared_ptr<Material> material,
+        double t,
+        HitType type) :
+      type{ type },
+      point{ point },
+      normal{ normal },
+      material{ material },
+      t{ t }
     {
     }
 
@@ -28,6 +40,7 @@ struct Hit {
 
     const Vec3 point;
     const Vec3 normal;
+    std::shared_ptr<Material> material;
     const double t;
 };
 
