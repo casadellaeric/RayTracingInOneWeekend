@@ -137,3 +137,12 @@ inline Vec3 reflect(const Vec3& v, const Vec3& n)
 {
     return v - 2 * dot(v, n) * n;
 }
+
+inline Vec3 refract(const Vec3& v,
+                    const Vec3& n,
+                    double ratio)  // Ratio of refractive indices n1/n2
+{
+    auto rayOutPerp{ ratio * (v + std::fmin(1., dot(-v, n)) * n) };
+    auto rayOutPar{ -std::sqrt(std::fabs(1. - rayOutPerp.length2())) * n };
+    return rayOutPerp + rayOutPar;
+}

@@ -20,19 +20,6 @@ struct Hit {
     {
     }
 
-    Hit(const Vec3& point,
-        const Vec3& normal,
-        std::shared_ptr<Material> material,
-        double t,
-        HitType type) :
-      type{ type },
-      point{ point },
-      normal{ normal },
-      material{ material },
-      t{ t }
-    {
-    }
-
     Hit(const Hit& other) = default;
 
     // Do not move this below normal

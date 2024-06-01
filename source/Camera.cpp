@@ -35,7 +35,7 @@ void Camera::render_region(const HittableList& scene, unsigned int startRow, uns
     assert(startRow < endRow);
 
     for (size_t i = startRow; i < endRow; ++i) {
-        std::clog << "\rScanlines remaining: " << (m_imageHeight - i) << " " << std::flush;
+        std::clog << "\rScanlines remaining: " << endRow - i << " " << std::flush;
         for (size_t j = 0; j < m_imageWidth; ++j) {
             Vec3 sumColor{};
             for (size_t k = 0; k < m_numSamples; ++k) {
@@ -47,22 +47,43 @@ void Camera::render_region(const HittableList& scene, unsigned int startRow, uns
     std::clog << "\rDone.                   \n" << std::flush;
 }
 
+void Camera::init_viewport()
+{
+    auto theta{ degrees_to_radians(m_vFov) };
+    auto h{ std::tan(theta / 2.) };
+    m_viewportHeight = 2 * h * m_focusDist;
+    m_viewportWidth  = m_viewportHeight * (static_cast<double>(m_imageWidth) / m_imageHeight);
+
+    w = (m_position - m_lookAt).normalized();
+    u = cross(m_up, w).normalized();
+    v = cross(w, u);
+
+    auto viewportU{ m_viewportWidth * u };
+    auto viewportV{ m_viewportHeight * -v };
+
+    m_pixelDeltaU = viewportU / static_cast<double>(m_imageWidth);
+    m_pixelDeltaV = viewportV / static_cast<double>(m_imageHeight);
+
+    m_viewportUpperLeft = m_position - (m_focusDist * w) - viewportU / 2. - viewportV / 2.;
+
+    auto defocusRadius{ m_focusDist * std::tan(degrees_to_radians(m_defocusAngle / 2.)) };
+    m_defocusDiskU = defocusRadius * u;
+    m_defocusDiskV = defocusRadius * v;
+}
+
+Vec3 Camera::random_point_defocus_disk() const
+{
+    auto randomDiskPoint{ random_vec_in_unit_disk() };
+    return m_position + randomDiskPoint.x * m_defocusDiskU + randomDiskPoint.y * m_defocusDiskV;
+}
+
 Ray Camera::get_ray(int i, int j) const
 {
-    static const double pixelDeltaU{ m_viewportWidth / m_imageWidth };
-    static const double pixelDeltaV{ -(m_viewportHeight / m_imageHeight) };
+    Vec3 rayTarget{ m_viewportUpperLeft + (j + (1 * random_double())) * m_pixelDeltaU
+                    + (i + (1 * random_double())) * m_pixelDeltaV };
 
-    // Camera config
-    static const Vec3 viewportUpperLeft{ m_position
-                                         - Vec3(0., 0., m_focalLength)  // Center of the viewport
-                                         - Vec3(m_viewportWidth / 2., 0., 0.)  // Left side
-                                         + Vec3(0., m_viewportHeight / 2., 0.) };
-
-    Vec3 rayTarget{
-        viewportUpperLeft
-        + Vec3{pixelDeltaU * (j + random_double()), pixelDeltaV * (i + random_double()), 0.}
-    };
-    return Ray(m_position, rayTarget - m_position);
+    Vec3 rayOrigin{ m_defocusAngle <= 0. ? m_position : random_point_defocus_disk() };
+    return Ray(rayOrigin, rayTarget - rayOrigin);
 };
 
 Vec3 Camera::get_ray_color(const Ray& ray, const HittableList& scene) const
@@ -80,9 +101,8 @@ Vec3 Camera::get_ray_color_rec(const Ray& ray,
 
     std::optional<Hit> hit{ scene.test_hit(
         ray,
-        Interval(
-            0. + std::numeric_limits<double>::epsilon(),  // Start from epsilon to avoid shadow acne
-            std::numeric_limits<double>::infinity())) };
+        Interval(1e-8,  // Start from small value to avoid shadow acne
+                 std::numeric_limits<double>::infinity())) };
 
     if (hit) {
         Vec3 attenuation;

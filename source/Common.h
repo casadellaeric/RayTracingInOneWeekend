@@ -68,15 +68,26 @@ inline Vec3 random_vec(double min, double max)
     return Vec3(random_double(min, max), random_double(min, max), random_double(min, max));
 }
 
-inline Vec3 random_vec_unit_sphere()
+inline Vec3 random_vec_on_unit_sphere()
 {
     return Vec3(random_double_normal(), random_double_normal(), random_double_normal())
         .normalized();
 }
 
+// Disk in the XY plane
+inline Vec3 random_vec_in_unit_disk()
+{
+    while (true) {
+        Vec3 randomVec{ random_double(-1., 1.), random_double(-1., 1.), 0. };
+        if (randomVec.length2() < 1.) {
+            return randomVec;
+        }
+    }
+}
+
 inline Vec3 random_vec_hempsphere(const Vec3& normal)
 {
-    Vec3 rVec{ random_vec_unit_sphere() };
+    Vec3 rVec{ random_vec_on_unit_sphere() };
     return dot(rVec, normal) >= 0. ? rVec : -rVec;
 }
 
