@@ -44,7 +44,10 @@ public:
     }
 
     void render(const HittableList& scene);
-    void render_region(const HittableList& scene, unsigned int startRow, unsigned int endRow);
+    void render_region(const HittableList& scene,
+                       unsigned int startRow,
+                       unsigned int endRow,
+                       int threadIdx);
 
 private:
 

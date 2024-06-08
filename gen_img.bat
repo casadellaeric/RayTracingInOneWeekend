@@ -1,3 +1,5 @@
+@echo off
+
 set index=0
 set folder=images
 

@@ -3,19 +3,24 @@
 #include <thread>
 
 #include "Material.h"
+#include <mutex>
+
+int g_numThreads{};
+std::mutex g_printMutex{};
 
 void Camera::render(const HittableList& scene)
 {
     {
-        const auto numThreads{ std::thread::hardware_concurrency() };
+        g_numThreads = std::thread::hardware_concurrency();
         std::vector<std::jthread> threads;
-        const auto blockSize{ m_imageHeight / numThreads };
-        for (size_t i = 0; i < numThreads; ++i) {
+        const auto blockSize{ m_imageHeight / g_numThreads };
+        for (size_t i = 0; i < g_numThreads; ++i) {
             threads.emplace_back(std::jthread(&Camera::render_region,
                                               this,
                                               scene,
                                               unsigned int(i * blockSize),
-                                              unsigned int((i + 1) * blockSize)));
+                                              unsigned int((i + 1) * blockSize),
+                                              i));
         }
         std::this_thread::yield();
     }
@@ -30,12 +35,33 @@ void Camera::render(const HittableList& scene)
     }
 }
 
-void Camera::render_region(const HittableList& scene, unsigned int startRow, unsigned int endRow)
+void print_progress(int threadIdx, double progress)
+{
+    std::string progressText{};
+    progressText.append("\rPer-thread progress: \n");
+    for (int i = 0; i < g_numThreads; ++i) {
+        progressText.append(std::to_string(i) + ": ");
+        if (i == threadIdx) {
+            if (progress < 1.) {
+                progressText.append(std::to_string(progress * 100.) + "%");
+            } else {
+                progressText.append("Done.                  ");
+            }
+        }
+        progressText.append("\n");
+    }
+    std::lock_guard<std::mutex> lg(g_printMutex);
+    std::clog << "\033[" << g_numThreads + 1 << "A" << progressText << std::flush;
+}
+
+void Camera::render_region(const HittableList& scene,
+                           unsigned int startRow,
+                           unsigned int endRow,
+                           int threadIdx)
 {
     assert(startRow < endRow);
-
     for (size_t i = startRow; i < endRow; ++i) {
-        std::clog << "\rScanlines remaining: " << endRow - i << " " << std::flush;
+        print_progress(threadIdx, (i - startRow) / double(endRow - 1 - startRow));
         for (size_t j = 0; j < m_imageWidth; ++j) {
             Vec3 sumColor{};
             for (size_t k = 0; k < m_numSamples; ++k) {
@@ -44,7 +70,6 @@ void Camera::render_region(const HittableList& scene, unsigned int startRow, uns
             m_frameBuffer[i][j] = to_rgb(sumColor / m_numSamples);
         }
     }
-    std::clog << "\rDone.                   \n" << std::flush;
 }
 
 void Camera::init_viewport()
@@ -83,7 +108,7 @@ Ray Camera::get_ray(int i, int j) const
                     + (i + (1 * random_double())) * m_pixelDeltaV };
 
     Vec3 rayOrigin{ m_defocusAngle <= 0. ? m_position : random_point_defocus_disk() };
-    return Ray(rayOrigin, rayTarget - rayOrigin);
+    return Ray(rayOrigin, rayTarget - rayOrigin, random_double());
 };
 
 Vec3 Camera::get_ray_color(const Ray& ray, const HittableList& scene) const

@@ -60,15 +60,20 @@ HittableList sceneFinalBook1()
             if (sphereMatRand < 0.8) {
                 auto color{ random_vec() * random_vec() };
                 sphereMat = std::make_shared<Lambertian>(color);
+
+                Vec3 spherePos2{
+                    spherePos + Vec3{0., random_double(0., 0.5), 0.}
+                };
+                scene.add(std::make_shared<Sphere>(Sphere(spherePos, spherePos2, 0.2, sphereMat)));
             } else if (sphereMatRand < 0.95) {
                 auto color{ random_vec(0.5, 1.) };
                 auto fuzz{ random_double(0., 0.5) };
                 sphereMat = std::make_shared<Metal>(color, fuzz);
+                scene.add(std::make_shared<Sphere>(Sphere(spherePos, 0.2, sphereMat)));
             } else {
                 sphereMat = sphereMatDielectric;
+                scene.add(std::make_shared<Sphere>(Sphere(spherePos, 0.2, sphereMat)));
             }
-
-            scene.add(std::make_shared<Sphere>(Sphere(spherePos, 0.2, sphereMat)));
         }
     }
 
@@ -97,12 +102,12 @@ int main()
         .lookAt       = Vec3(0., 0., 0.),
         .up           = Vec3(0., 1., 0.),
         .aspectRatio  = 16. / 9.,
-        .imageHeight  = 1440,
+        .imageHeight  = 480,
         .defocusAngle = 0.6,
         .focusDist    = 10.,
         .vFov         = 20,
-        .numSamples   = 500,
-        .maxRayDepth  = 50,
+        .numSamples   = 10,
+        .maxRayDepth  = 20,
     };
     Camera camera{ params };
 
