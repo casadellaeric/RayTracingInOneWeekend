@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Texture.h"
 #include "Common.h"
 #include "Hittable.h"
 
@@ -17,7 +18,12 @@ class Lambertian : public Material
 public:
 
     Lambertian(const Vec3& albedo) :
-      m_albedo(albedo)
+      m_tex(std::make_shared<SolidColor>(albedo))
+    {
+    }
+
+    Lambertian(std::shared_ptr<Texture> tex) :
+      m_tex(tex)
     {
     }
 
@@ -25,7 +31,7 @@ public:
 
 private:
 
-    Vec3 m_albedo;
+    std::shared_ptr<Texture> m_tex;
 };
 
 class Metal : public Material

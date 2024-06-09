@@ -1,10 +1,13 @@
 #include <chrono>
 
+#define STB_IMAGE_IMPLEMENTATION
+
+#include "Material.h"
 #include "Common.h"
 #include "Sphere.h"
 #include "HittableList.h"
 #include "Camera.h"
-#include "Material.h"
+#include "Node.h"
 
 HittableList sceneDielectrics()
 {
@@ -39,11 +42,14 @@ HittableList sceneFov()
     return scene;
 }
 
-HittableList sceneFinalBook1()
+std::pair<HittableList, CameraParams> sceneFinalBook1()
 {
     HittableList scene{};
 
-    auto materialGround{ std::make_shared<Lambertian>(Vec3{ 0.5, 0.5, 0.5 }) };
+    auto checkerTexture{
+        std::make_shared<CheckerTexture>(0.32, Vec3{ .2, .3, .1 }, Vec3{ .9, .9, .9 })
+    };
+    auto materialGround{ std::make_shared<Lambertian>(checkerTexture) };
     scene.add(std::make_shared<Sphere>(Sphere({ 0., -1000., 0. }, 1000., materialGround)));
 
     auto sphereMatDielectric{ std::make_shared<Dielectric>(1.5) };
@@ -86,31 +92,81 @@ HittableList sceneFinalBook1()
     auto material3{ std::make_shared<Metal>(Vec3(0.7, 0.6, 0.5), 0.0) };
     scene.add(std::make_shared<Sphere>(Vec3(4., 1., 0.), 1.0, material3));
 
-    return scene;
+    CameraParams params{
+        .position     = Vec3(13., 2., 3.),
+        .lookAt       = Vec3(0., 0., 0.),
+        .up           = Vec3(0., 1., 0.),
+        .aspectRatio  = 16. / 9.,
+        .imageHeight  = 720,
+        .defocusAngle = 0.6,
+        .focusDist    = 10.,
+        .vFov         = 20,
+        .numSamples   = 100,
+        .maxRayDepth  = 30,
+    };
+
+    return std::make_pair(scene, params);
 }
 
-int main()
+std::pair<HittableList, CameraParams> sceneCheckeredSpheres()
 {
-    // Scene
+    HittableList scene{};
 
-    HittableList scene{ sceneFinalBook1() };
-
-    // Render
+    auto checkerTexture{
+        std::make_shared<CheckerTexture>(0.32, Vec3{ .2, .3, .1 }, Vec3{ .9, .9, .9 })
+    };
+    scene.add(std::make_shared<Sphere>(
+        Sphere({ 0., -10., 0. }, 10., std::make_shared<Lambertian>(checkerTexture))));
+    scene.add(std::make_shared<Sphere>(
+        Sphere({ 0., 10., 0. }, 10., std::make_shared<Lambertian>(checkerTexture))));
 
     CameraParams params{
         .position     = Vec3(13., 2., 3.),
         .lookAt       = Vec3(0., 0., 0.),
         .up           = Vec3(0., 1., 0.),
         .aspectRatio  = 16. / 9.,
-        .imageHeight  = 480,
-        .defocusAngle = 0.6,
+        .imageHeight  = 720,
+        .defocusAngle = 0.,
         .focusDist    = 10.,
         .vFov         = 20,
-        .numSamples   = 10,
-        .maxRayDepth  = 20,
+        .numSamples   = 100,
+        .maxRayDepth  = 30,
     };
-    Camera camera{ params };
 
+    return std::make_pair(scene, params);
+}
+
+std::pair<HittableList, CameraParams> sceneEarth()
+{
+    HittableList scene{};
+
+    auto earthTexture{ std::make_shared<ImageTexture>("../textures/earthmap.jpg") };
+    scene.add(std::make_shared<Sphere>(
+        Sphere({ 0., 0., 0. }, 2., std::make_shared<Lambertian>(earthTexture))));
+
+    CameraParams params{
+        .position     = Vec3(0., 0., 12.),
+        .lookAt       = Vec3(0., 0., 0.),
+        .up           = Vec3(0., 1., 0.),
+        .aspectRatio  = 16. / 9.,
+        .imageHeight  = 720,
+        .defocusAngle = 0.,
+        .focusDist    = 10.,
+        .vFov         = 20,
+        .numSamples   = 100,
+        .maxRayDepth  = 30,
+    };
+
+    return std::make_pair(scene, params);
+}
+
+int main()
+{
+    auto [scene, camParams]{ sceneEarth() };
+
+    camParams.numSamples = 20;
+
+    Camera camera{ camParams };
     auto t0{ std::chrono::steady_clock::now() };
     camera.render(scene);
     auto t1{ std::chrono::steady_clock::now() };

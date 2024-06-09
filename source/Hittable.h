@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "AABB.h"
 
 class Material;
 
@@ -11,12 +12,16 @@ struct Hit {
         const Vec3& normal,
         std::shared_ptr<Material> material,
         double t,
-        const Ray& ray) :
+        const Ray& ray,
+        double u = 0.,
+        double v = 0.) :
       type{ static_cast<HitType>(dot(normal, ray.get_direction()) <= 0.) },
       point{ point },
       normal{ type == HitType::front ? normal : -normal },
       material{ material },
-      t{ t }
+      t{ t },
+      u{ u },
+      v{ v }
     {
     }
 
@@ -29,6 +34,9 @@ struct Hit {
     const Vec3 normal;
     std::shared_ptr<Material> material;
     const double t;
+
+    const double u;
+    const double v;
 };
 
 class Hittable
@@ -38,4 +46,5 @@ public:
     virtual ~Hittable() = default;
 
     virtual std::optional<Hit> test_hit(const Ray& ray, const Interval& interval) const = 0;
+    virtual AABB get_bounding_box() const                                               = 0;
 };

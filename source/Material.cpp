@@ -7,7 +7,7 @@ bool Lambertian::scatter(const Ray& ray, const Hit& hit, Vec3& attenuation, Ray&
         outDirection = hit.normal;
     }
     outRay      = Ray(hit.point, outDirection, ray.get_time());
-    attenuation = m_albedo;
+    attenuation = m_tex->value(hit.u, hit.v, hit.point);
     return true;
 }
 

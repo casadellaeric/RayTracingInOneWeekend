@@ -35,7 +35,6 @@ public:
     {
         assert(m_aspectRatio > 0.);
         assert(m_imageHeight > 0);
-        assert(m_viewportHeight > 0);
         assert(m_numSamples > 0);
         assert(m_maxRayDepth > 0);
         m_frameBuffer.resize(m_imageHeight, std::vector<tVec3<int>>(m_imageWidth, tVec3<int>{}));

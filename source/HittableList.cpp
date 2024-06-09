@@ -10,6 +10,7 @@ HittableList::HittableList(const std::vector<std::shared_ptr<Hittable>>& list)
 void HittableList::add(std::shared_ptr<Hittable> object)
 {
     if (object.get() != this) {  // Check for cyclic references
+        m_bbox = AABB(m_bbox, object->get_bounding_box());
         m_list.push_back(object);
     } else {
         throw std::runtime_error("Trying to add HittableList to itself!");
@@ -34,4 +35,9 @@ std::optional<Hit> HittableList::test_hit(const Ray& ray, const Interval& interv
         }
     }
     return closestHit;
+}
+
+AABB HittableList::get_bounding_box() const
+{
+    return m_bbox;
 }

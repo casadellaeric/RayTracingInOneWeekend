@@ -21,11 +21,22 @@ public:
     {
     }
 
+    constexpr Interval(const Interval& a, const Interval& b) :
+      min{ a.min <= b.min ? a.min : b.min },
+      max{ a.max >= b.max ? a.max : b.max }
+    {
+    }
+
     constexpr double size() const { return max - min; }
     constexpr bool contains(double t) const { return t >= min && t <= max; }
     constexpr bool surrounds(double t) const { return t > min && t < max; }
+    constexpr Interval expand(double d) const
+    {
+        double pad{ d / 2. };
+        return Interval(min - pad, max + pad);
+    }
 
-    const double min, max;
+    double min, max;
     static const Interval empty, universe;
 };
 
