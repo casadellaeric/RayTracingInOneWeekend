@@ -160,9 +160,35 @@ std::pair<HittableList, CameraParams> sceneEarth()
     return std::make_pair(scene, params);
 }
 
+std::pair<HittableList, CameraParams> scenePerlinSpheres()
+{
+    HittableList scene{};
+
+    auto noiseTexture{ std::make_shared<NoiseTexture>(4.) };
+    scene.add(std::make_shared<Sphere>(
+        Sphere({ 0., -1000., 0. }, 1000., std::make_shared<Lambertian>(noiseTexture))));
+    scene.add(std::make_shared<Sphere>(
+        Sphere({ 0., 2., 0. }, 2., std::make_shared<Lambertian>(noiseTexture))));
+
+    CameraParams params{
+        .position     = Vec3(13., 2., 3.),
+        .lookAt       = Vec3(0., 0., 0.),
+        .up           = Vec3(0., 1., 0.),
+        .aspectRatio  = 16. / 9.,
+        .imageHeight  = 720,
+        .defocusAngle = 0.,
+        .focusDist    = 10.,
+        .vFov         = 20,
+        .numSamples   = 100,
+        .maxRayDepth  = 30,
+    };
+
+    return std::make_pair(scene, params);
+}
+
 int main()
 {
-    auto [scene, camParams]{ sceneEarth() };
+    auto [scene, camParams]{ scenePerlinSpheres() };
 
     camParams.numSamples = 20;
 

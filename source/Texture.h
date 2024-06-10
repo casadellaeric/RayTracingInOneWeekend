@@ -2,6 +2,7 @@
 
 #include "rtw_stb_image.h"
 #include "Common.h"
+#include "Perlin.h"
 
 class Texture
 {
@@ -88,4 +89,28 @@ public:
 private:
 
     rtw_image m_image{};
+};
+
+class NoiseTexture : public Texture
+{
+public:
+
+    NoiseTexture() { }
+    NoiseTexture(double scale) :
+      m_scale(scale)
+    {
+    }
+
+    Vec3 value(double u, double v, const Vec3& point) const override
+    {
+        // return Vec3{ 0.5 } * (1. + m_noise.get_noise(point * m_scale));
+        // return Vec3{ 1. } * m_noise.get_turbulence(point, 7);
+        return Vec3{ 0.5 }
+               * (1. + std::sin(m_scale * point.z + 10. * m_noise.get_turbulence(point, 7)));
+    }
+
+private:
+
+    Perlin m_noise{};
+    double m_scale{ 1. };
 };
