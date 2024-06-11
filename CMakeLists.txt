@@ -12,7 +12,7 @@ endif()
 project ("RayTracing")
 
 # Add source to this project's executable.
-add_executable (RayTracing  "source/main.cpp" "source/Vec3.h"  "source/Ray.h" "source/Sphere.h" "source/Sphere.cpp" "source/Hittable.h"  "source/HittableList.h" "source/HittableList.cpp"  "source/Common.h"    "source/Camera.h" "source/Camera.cpp" "source/Material.h" "source/Interval.h" "source/Material.cpp"  "source/AABB.h" "source/AABB.cpp" "source/Node.h" "source/Texture.h" "source/rtw_stb_image.h" "external/stb_image.h" "source/Perlin.h")
+add_executable (RayTracing  "source/main.cpp" "source/Vec3.h"  "source/Ray.h" "source/Sphere.h" "source/Sphere.cpp" "source/Hittable.h"  "source/HittableList.h" "source/HittableList.cpp"  "source/Common.h"    "source/Camera.h" "source/Camera.cpp" "source/Material.h" "source/Interval.h" "source/Material.cpp"  "source/AABB.h" "source/AABB.cpp" "source/Node.h" "source/Texture.h" "source/rtw_stb_image.h" "external/stb_image.h" "source/Perlin.h" "source/Quad.h" "source/Quad.cpp")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET RayTracing PROPERTY CXX_STANDARD 20)

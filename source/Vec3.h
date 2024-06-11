@@ -130,7 +130,7 @@ double dot(const tVec3<T>& u, const tVec3<T>& v)
 template<typename T>
 tVec3<T> cross(const tVec3<T>& u, const tVec3<T>& v)
 {
-    return { u.y * v.z - u.z * v.y, u.z * v.x - u.x * v.z, u.x * v.y - u.y * v.x };
+    return { (u.y * v.z) - (u.z * v.y), (u.z * v.x) - (u.x * v.z), (u.x * v.y) - (u.y * v.x) };
 }
 
 inline Vec3 reflect(const Vec3& v, const Vec3& n)

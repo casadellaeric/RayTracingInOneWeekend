@@ -30,10 +30,11 @@ public:
     constexpr double size() const { return max - min; }
     constexpr bool contains(double t) const { return t >= min && t <= max; }
     constexpr bool surrounds(double t) const { return t > min && t < max; }
-    constexpr Interval expand(double d) const
+    constexpr void expand(double d)
     {
         double pad{ d / 2. };
-        return Interval(min - pad, max + pad);
+        min = min - pad;
+        max = max + pad;
     }
 
     double min, max;

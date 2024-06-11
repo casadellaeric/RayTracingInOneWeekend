@@ -18,6 +18,7 @@ public:
       y(y),
       z(z)
     {
+        pad_to_minimums();
     }
 
     AABB(const Vec3& a, const Vec3& b) :
@@ -25,6 +26,7 @@ public:
       y(a.y < b.y ? Interval(a.y, b.y) : Interval(b.y, a.y)),
       z(a.z < b.z ? Interval(a.z, b.z) : Interval(b.z, a.z))
     {
+        pad_to_minimums();
     }
 
     AABB(const AABB& a, const AABB& b) :
@@ -32,6 +34,7 @@ public:
       y{ Interval(a.y, b.y) },
       z{ Interval(a.z, b.z) }
     {
+        pad_to_minimums();
     }
 
     const Interval& axis_interval(int n) const { return v[n]; }
@@ -41,6 +44,10 @@ public:
     int longest_axis() const;
 
     static const AABB empty, universe;
+
+private:
+
+    void pad_to_minimums();
 
 private:
 

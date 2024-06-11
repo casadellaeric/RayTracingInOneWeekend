@@ -8,6 +8,7 @@
 #include "HittableList.h"
 #include "Camera.h"
 #include "Node.h"
+#include "Quad.h"
 
 HittableList sceneDielectrics()
 {
@@ -186,11 +187,55 @@ std::pair<HittableList, CameraParams> scenePerlinSpheres()
     return std::make_pair(scene, params);
 }
 
+std::pair<HittableList, CameraParams> sceneQuads()
+{
+    HittableList scene{};
+
+    auto backGreen{ std::make_shared<Lambertian>(Vec3{ 0.2, 1.0, 0.2 }) };
+    auto leftRed{ std::make_shared<Lambertian>(Vec3{ 1.0, 0.2, 0.2 }) };
+    auto rightBlue{ std::make_shared<Lambertian>(Vec3{ 0.2, 0.2, 1.0 }) };
+    auto upperOrange{ std::make_shared<Lambertian>(Vec3{ 1.0, 0.5, 0.0 }) };
+    auto lowerTeal{ std::make_shared<Lambertian>(Vec3{ 0.2, 0.8, 0.8 }) };
+
+    scene.add(std::make_shared<Quad>(Vec3{ -2., -2., 0. },
+                                     Vec3{ 4., 0., 0. },
+                                     Vec3{ 0., 4., 0. },
+                                     backGreen));
+    scene.add(std::make_shared<Quad>(Vec3{ -3., -2., 5. },
+                                     Vec3{ 0., 0., -4. },
+                                     Vec3{ 0., 4., 0. },
+                                     leftRed));
+    scene.add(std::make_shared<Quad>(Vec3{ 3., -2., 1. },
+                                     Vec3{ 0., 0., 4. },
+                                     Vec3{ 0., 4., 0. },
+                                     rightBlue));
+    scene.add(std::make_shared<Quad>(Vec3{ -2., 3., 1. },
+                                     Vec3{ 4., 0., 0. },
+                                     Vec3{ 0., 0., 4. },
+                                     upperOrange));
+    scene.add(std::make_shared<Quad>(Vec3{ -2., -3., 5. },
+                                     Vec3{ 4., 0., 0. },
+                                     Vec3{ 0., 0., -4. },
+                                     lowerTeal));
+
+    CameraParams params{
+        .position     = Vec3(0., 0., 9.),
+        .lookAt       = Vec3(0., 0., 0.),
+        .up           = Vec3(0., 1., 0.),
+        .aspectRatio  = 1.,
+        .imageHeight  = 720,
+        .defocusAngle = 0.,
+        .vFov         = 80,
+        .numSamples   = 100,
+        .maxRayDepth  = 30,
+    };
+
+    return std::make_pair(scene, params);
+}
+
 int main()
 {
-    auto [scene, camParams]{ scenePerlinSpheres() };
-
-    camParams.numSamples = 20;
+    auto [scene, camParams]{ sceneQuads() };
 
     Camera camera{ camParams };
     auto t0{ std::chrono::steady_clock::now() };

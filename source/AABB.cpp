@@ -35,3 +35,17 @@ int AABB::longest_axis() const
         return y.size() > z.size() ? 1 : 2;
     }
 }
+
+void AABB::pad_to_minimums()
+{
+    double smallSize{ 0.0001 };
+    if (x.size() < smallSize) {
+        x.expand(smallSize);
+    }
+    if (y.size() < smallSize) {
+        y.expand(smallSize);
+    }
+    if (z.size() < smallSize) {
+        z.expand(smallSize);
+    }
+}
