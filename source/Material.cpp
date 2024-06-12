@@ -1,5 +1,10 @@
 #include "Material.h"
 
+Vec3 Material::emitted(const Vec3& point, double u, double v) const
+{
+    return Vec3(0.);
+}
+
 bool Lambertian::scatter(const Ray& ray, const Hit& hit, Vec3& attenuation, Ray& outRay) const
 {
     auto outDirection{ hit.normal + random_vec_on_unit_sphere() };
@@ -45,4 +50,14 @@ double Dielectric::reflectance(double cosine, double refractionIndex) const
 {
     auto r0{ std::pow((1. - refractionIndex) / (1. + refractionIndex), 2) };
     return r0 + (1. - r0) * std::pow(1. - cosine, 5);
+}
+
+bool DiffuseLight::scatter(const Ray& ray, const Hit& hit, Vec3& attenuation, Ray& outRay) const
+{
+    return false;
+}
+
+Vec3 DiffuseLight::emitted(const Vec3& point, double u, double v) const
+{
+    return m_texture->value(u, v, point);
 }

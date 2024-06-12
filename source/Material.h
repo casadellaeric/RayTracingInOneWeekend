@@ -11,6 +11,7 @@ public:
     virtual ~Material() = default;
 
     virtual bool scatter(const Ray& ray, const Hit& hit, Vec3& attenuation, Ray& outRay) const = 0;
+    virtual Vec3 emitted(const Vec3& point, double u, double v) const;
 };
 
 class Lambertian : public Material
@@ -70,4 +71,26 @@ private:
 private:
 
     double m_refractionRatio;
+};
+
+class DiffuseLight : public Material
+{
+public:
+
+    DiffuseLight(std::shared_ptr<Texture> texture) :
+      m_texture{ texture }
+    {
+    }
+
+    DiffuseLight(const Vec3& color) :
+      m_texture{ std::make_shared<SolidColor>(color) }
+    {
+    }
+
+    bool scatter(const Ray& ray, const Hit& hit, Vec3& attenuation, Ray& outRay) const override;
+    Vec3 emitted(const Vec3& point, double u, double v) const override;
+
+private:
+
+    std::shared_ptr<Texture> m_texture{};
 };

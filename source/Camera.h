@@ -4,16 +4,17 @@
 #include "HittableList.h"
 
 struct CameraParams {
-    const Vec3& position     = Vec3{ 0., 0., 0. };
-    const Vec3& lookAt       = Vec3{ 0., 0., -1. };
-    const Vec3& up           = Vec3{ 0., 1., 0. };
-    double aspectRatio       = 1.;
-    size_t imageHeight       = 720;
-    double defocusAngle      = 10.;
-    double focusDist         = 1.;
-    double vFov              = 90.;  // Degrees
-    unsigned int numSamples  = 1;
-    unsigned int maxRayDepth = 10;
+    const Vec3& position        = Vec3{ 0., 0., 0. };
+    const Vec3& lookAt          = Vec3{ 0., 0., -1. };
+    const Vec3& up              = Vec3{ 0., 1., 0. };
+    double aspectRatio          = 1.;
+    size_t imageHeight          = 720;
+    double defocusAngle         = 10.;
+    double focusDist            = 1.;
+    double vFov                 = 90.;  // Degrees
+    unsigned int numSamples     = 1;
+    unsigned int maxRayDepth    = 10;
+    const Vec3& backgroundColor = Vec3{ 0. };
 };
 
 class Camera
@@ -31,7 +32,8 @@ public:
       m_focusDist{ params.focusDist },
       m_vFov{ params.vFov },
       m_numSamples{ params.numSamples },
-      m_maxRayDepth{ params.maxRayDepth }
+      m_maxRayDepth{ params.maxRayDepth },
+      m_backgroundColor{ params.backgroundColor }
     {
         assert(m_aspectRatio > 0.);
         assert(m_imageHeight > 0);
@@ -86,6 +88,8 @@ private:
 
     unsigned int m_numSamples;
     unsigned int m_maxRayDepth;
+
+    Vec3 m_backgroundColor;
 
     std::vector<std::vector<tVec3<int>>> m_frameBuffer{};
 };

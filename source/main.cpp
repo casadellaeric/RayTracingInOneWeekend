@@ -94,16 +94,17 @@ std::pair<HittableList, CameraParams> sceneFinalBook1()
     scene.add(std::make_shared<Sphere>(Vec3(4., 1., 0.), 1.0, material3));
 
     CameraParams params{
-        .position     = Vec3(13., 2., 3.),
-        .lookAt       = Vec3(0., 0., 0.),
-        .up           = Vec3(0., 1., 0.),
-        .aspectRatio  = 16. / 9.,
-        .imageHeight  = 720,
-        .defocusAngle = 0.6,
-        .focusDist    = 10.,
-        .vFov         = 20,
-        .numSamples   = 100,
-        .maxRayDepth  = 30,
+        .position        = Vec3(13., 2., 3.),
+        .lookAt          = Vec3(0., 0., 0.),
+        .up              = Vec3(0., 1., 0.),
+        .aspectRatio     = 16. / 9.,
+        .imageHeight     = 720,
+        .defocusAngle    = 0.6,
+        .focusDist       = 10.,
+        .vFov            = 20,
+        .numSamples      = 100,
+        .maxRayDepth     = 30,
+        .backgroundColor = Vec3{0.70, 0.80, 1.00}
     };
 
     return std::make_pair(scene, params);
@@ -122,16 +123,17 @@ std::pair<HittableList, CameraParams> sceneCheckeredSpheres()
         Sphere({ 0., 10., 0. }, 10., std::make_shared<Lambertian>(checkerTexture))));
 
     CameraParams params{
-        .position     = Vec3(13., 2., 3.),
-        .lookAt       = Vec3(0., 0., 0.),
-        .up           = Vec3(0., 1., 0.),
-        .aspectRatio  = 16. / 9.,
-        .imageHeight  = 720,
-        .defocusAngle = 0.,
-        .focusDist    = 10.,
-        .vFov         = 20,
-        .numSamples   = 100,
-        .maxRayDepth  = 30,
+        .position        = Vec3(13., 2., 3.),
+        .lookAt          = Vec3(0., 0., 0.),
+        .up              = Vec3(0., 1., 0.),
+        .aspectRatio     = 16. / 9.,
+        .imageHeight     = 720,
+        .defocusAngle    = 0.,
+        .focusDist       = 10.,
+        .vFov            = 20,
+        .numSamples      = 100,
+        .maxRayDepth     = 30,
+        .backgroundColor = Vec3{0.70, 0.80, 1.00}
     };
 
     return std::make_pair(scene, params);
@@ -146,16 +148,17 @@ std::pair<HittableList, CameraParams> sceneEarth()
         Sphere({ 0., 0., 0. }, 2., std::make_shared<Lambertian>(earthTexture))));
 
     CameraParams params{
-        .position     = Vec3(0., 0., 12.),
-        .lookAt       = Vec3(0., 0., 0.),
-        .up           = Vec3(0., 1., 0.),
-        .aspectRatio  = 16. / 9.,
-        .imageHeight  = 720,
-        .defocusAngle = 0.,
-        .focusDist    = 10.,
-        .vFov         = 20,
-        .numSamples   = 100,
-        .maxRayDepth  = 30,
+        .position        = Vec3(0., 0., 12.),
+        .lookAt          = Vec3(0., 0., 0.),
+        .up              = Vec3(0., 1., 0.),
+        .aspectRatio     = 16. / 9.,
+        .imageHeight     = 720,
+        .defocusAngle    = 0.,
+        .focusDist       = 10.,
+        .vFov            = 20,
+        .numSamples      = 100,
+        .maxRayDepth     = 30,
+        .backgroundColor = Vec3{0.70, 0.80, 1.00}
     };
 
     return std::make_pair(scene, params);
@@ -172,16 +175,17 @@ std::pair<HittableList, CameraParams> scenePerlinSpheres()
         Sphere({ 0., 2., 0. }, 2., std::make_shared<Lambertian>(noiseTexture))));
 
     CameraParams params{
-        .position     = Vec3(13., 2., 3.),
-        .lookAt       = Vec3(0., 0., 0.),
-        .up           = Vec3(0., 1., 0.),
-        .aspectRatio  = 16. / 9.,
-        .imageHeight  = 720,
-        .defocusAngle = 0.,
-        .focusDist    = 10.,
-        .vFov         = 20,
-        .numSamples   = 100,
-        .maxRayDepth  = 30,
+        .position        = Vec3(13., 2., 3.),
+        .lookAt          = Vec3(0., 0., 0.),
+        .up              = Vec3(0., 1., 0.),
+        .aspectRatio     = 16. / 9.,
+        .imageHeight     = 720,
+        .defocusAngle    = 0.,
+        .focusDist       = 10.,
+        .vFov            = 20,
+        .numSamples      = 100,
+        .maxRayDepth     = 30,
+        .backgroundColor = Vec3{0.70, 0.80, 1.00}
     };
 
     return std::make_pair(scene, params);
@@ -219,23 +223,107 @@ std::pair<HittableList, CameraParams> sceneQuads()
                                      lowerTeal));
 
     CameraParams params{
-        .position     = Vec3(0., 0., 9.),
-        .lookAt       = Vec3(0., 0., 0.),
-        .up           = Vec3(0., 1., 0.),
-        .aspectRatio  = 1.,
-        .imageHeight  = 720,
-        .defocusAngle = 0.,
-        .vFov         = 80,
-        .numSamples   = 100,
-        .maxRayDepth  = 30,
+        .position        = Vec3(0., 0., 9.),
+        .lookAt          = Vec3(0., 0., 0.),
+        .up              = Vec3(0., 1., 0.),
+        .aspectRatio     = 1.,
+        .imageHeight     = 720,
+        .defocusAngle    = 0.,
+        .vFov            = 80,
+        .numSamples      = 100,
+        .maxRayDepth     = 30,
+        .backgroundColor = Vec3{0.70, 0.80, 1.00}
     };
+
+    return std::make_pair(scene, params);
+}
+
+std::pair<HittableList, CameraParams> sceneSimpleLight()
+{
+    HittableList scene{};
+
+    auto noiseTexture{ std::make_shared<NoiseTexture>(4.) };
+    scene.add(std::make_shared<Sphere>(
+        Sphere({ 0., -1000., 0. }, 1000., std::make_shared<Lambertian>(noiseTexture))));
+    scene.add(std::make_shared<Sphere>(
+        Sphere({ 0., 2., 0. }, 2., std::make_shared<Lambertian>(noiseTexture))));
+
+    auto lightTexture{ std::make_shared<DiffuseLight>(Vec3{ 4. }) };
+    scene.add(std::make_shared<Sphere>(Sphere({ 0., 7., 0. }, 2., lightTexture)));
+    scene.add(std::make_shared<Quad>(Quad({ 3., 1., -2. },  // Q
+                                          { 2., 0., 0. },   // u
+                                          { 0., 2., 0. },   // v
+                                          lightTexture)));
+
+    CameraParams params{ .position        = Vec3(26., 3., 6.),
+                         .lookAt          = Vec3(0., 2., 0.),
+                         .up              = Vec3(0., 1., 0.),
+                         .aspectRatio     = 16. / 9.,
+                         .imageHeight     = 720,
+                         .defocusAngle    = 0.,
+                         .focusDist       = 10.,
+                         .vFov            = 20,
+                         .numSamples      = 100,
+                         .maxRayDepth     = 30,
+                         .backgroundColor = Vec3{ 0. } };
+
+    return std::make_pair(scene, params);
+}
+
+std::pair<HittableList, CameraParams> sceneCornellBox()
+{
+    HittableList scene{};
+
+    auto red{ std::make_shared<Lambertian>(Vec3{ .65, .05, .05 }) };
+    auto white{ std::make_shared<Lambertian>(Vec3{ .73, .73, .73 }) };
+    auto green{ std::make_shared<Lambertian>(Vec3{ .12, .45, .15 }) };
+    auto light{ std::make_shared<DiffuseLight>(Vec3{ 15, 15, 15 }) };
+
+    scene.add(
+        std::make_shared<Quad>(Vec3{ 555, 0, 0 }, Vec3{ 0, 555, 0 }, Vec3{ 0, 0, 555 }, green));
+    scene.add(std::make_shared<Quad>(Vec3{ 0, 0, 0 }, Vec3{ 0, 555, 0 }, Vec3{ 0, 0, 555 }, red));
+    scene.add(std::make_shared<Quad>(Vec3{ 0, 0, 0 }, Vec3{ 555, 0, 0 }, Vec3{ 0, 0, 555 }, white));
+    scene.add(std::make_shared<Quad>(Vec3{ 555, 555, 555 },
+                                     Vec3{ -555, 0, 0 },
+                                     Vec3{ 0, 0, -555 },
+                                     white));
+
+    scene.add(std::make_shared<Quad>(Vec3{ 343, 554, 332 },
+                                     Vec3{ -130, 0, 0 },
+                                     Vec3{ 0, 0, -105 },
+                                     light));
+
+    scene.add(
+        std::make_shared<Quad>(Vec3{ 0, 0, 555 }, Vec3{ 555, 0, 0 }, Vec3{ 0, 555, 0 }, white));
+
+    std::shared_ptr<Hittable> box1{ box(Vec3{ 0, 0, 0 }, Vec3{ 165, 330, 165 }, white) };
+    box1 = std::make_shared<RotationY>(box1, 15.);
+    box1 = std::make_shared<Translation>(box1, Vec3{ 265, 0, 295 });
+    scene.add(box1);
+
+    std::shared_ptr<Hittable> box2{ box(Vec3{ 0, 0, 0 }, Vec3{ 165, 165, 165 }, white) };
+    box2 = std::make_shared<RotationY>(box2, -18.);
+    box2 = std::make_shared<Translation>(box2, Vec3{ 130, 0, 65 });
+    scene.add(box2);
+
+    CameraParams params{ .position        = Vec3(278., 278., -800.),
+                         .lookAt          = Vec3(278., 278., 0.),
+                         .up              = Vec3(0., 1., 0.),
+                         .aspectRatio     = 1.,
+                         .imageHeight     = 720,
+                         .defocusAngle    = 0.,
+                         .focusDist       = 10.,
+                         .vFov            = 40,
+                         .numSamples      = 200,
+                         .maxRayDepth     = 50,
+                         .backgroundColor = Vec3{ 0. } };
 
     return std::make_pair(scene, params);
 }
 
 int main()
 {
-    auto [scene, camParams]{ sceneQuads() };
+    auto [scene, camParams]{ sceneCornellBox() };
 
     Camera camera{ camParams };
     auto t0{ std::chrono::steady_clock::now() };

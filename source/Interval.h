@@ -43,3 +43,13 @@ public:
 
 inline const Interval Interval::empty{ Interval(rt::INF, -rt::INF) };
 inline const Interval Interval::universe{ Interval(-rt::INF, rt::INF) };
+
+inline Interval operator+(const Interval& interval, double offset)
+{
+    return Interval{ interval.min + offset, interval.max + offset };
+}
+
+inline Interval operator+(double offset, const Interval& interval)
+{
+    return Interval{ interval.min + offset, interval.max + offset };
+}

@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "Hittable.h"
+#include "HittableList.h"
 
 class Quad : public Hittable
 {
@@ -38,3 +39,5 @@ private:
     std::shared_ptr<Material> m_material;
     const AABB m_bbox;
 };
+
+std::shared_ptr<HittableList> box(const Vec3& a, const Vec3& b, std::shared_ptr<Material> material);

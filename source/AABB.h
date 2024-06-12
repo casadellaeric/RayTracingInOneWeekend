@@ -49,7 +49,7 @@ private:
 
     void pad_to_minimums();
 
-private:
+public:
 
     union {
         struct {
@@ -61,3 +61,17 @@ private:
 
 inline const AABB AABB::empty{ Interval::empty, Interval::empty, Interval::empty };
 inline const AABB AABB::universe{ Interval::universe, Interval::universe, Interval::universe };
+
+inline AABB operator+(const AABB& box, const Vec3& offsets)
+{
+    return AABB(box.axis_interval(0) + offsets.x,
+                box.axis_interval(1) + offsets.y,
+                box.axis_interval(2) + offsets.z);
+}
+
+inline AABB operator+(const Vec3& offsets, const AABB& box)
+{
+    return AABB(box.axis_interval(0) + offsets.x,
+                box.axis_interval(1) + offsets.y,
+                box.axis_interval(2) + offsets.z);
+}

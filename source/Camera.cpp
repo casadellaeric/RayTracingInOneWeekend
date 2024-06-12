@@ -129,16 +129,18 @@ Vec3 Camera::get_ray_color_rec(const Ray& ray,
         Interval(1e-8,  // Start from small value to avoid shadow acne
                  std::numeric_limits<double>::infinity())) };
 
-    if (hit) {
-        Vec3 attenuation;
-        Ray scatteredRay;
-        if (hit->material->scatter(ray, *hit, attenuation, scatteredRay)) {
-            return attenuation * get_ray_color_rec(scatteredRay, scene, --currentDepth);
-        }
-        return Vec3{ 0. };
+    if (!hit) {
+        return m_backgroundColor;
     }
 
-    Vec3 rayNorm{ ray.get_direction().normalized() };
-    auto yPercent{ (rayNorm.y + 1.) / 2. };  // [-1, 1] -> [0, 1]
-    return (1. - yPercent) * Vec3{ 1., 1., 1. } + yPercent * Vec3{ 0.5, 0.7, 1. };
+    Vec3 emission{ hit->material->emitted(hit->point, hit->u, hit->v) };
+
+    Vec3 attenuation;
+    Ray scatteredRay;
+    if (!hit->material->scatter(ray, *hit, attenuation, scatteredRay)) {
+        return emission;
+    }
+    Vec3 scattered{ attenuation * get_ray_color_rec(scatteredRay, scene, --currentDepth) };
+
+    return scattered + emission;
 }
