@@ -94,3 +94,24 @@ private:
 
     std::shared_ptr<Texture> m_texture{};
 };
+
+class Isotropic : public Material
+{
+public:
+
+    Isotropic(std::shared_ptr<Texture> texture) :
+      m_texture{ texture }
+    {
+    }
+
+    Isotropic(const Vec3& color) :
+      m_texture{ std::make_shared<SolidColor>(color) }
+    {
+    }
+
+    bool scatter(const Ray& ray, const Hit& hit, Vec3& attenuation, Ray& outRay) const override;
+
+private:
+
+    std::shared_ptr<Texture> m_texture{};
+};

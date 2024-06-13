@@ -17,11 +17,12 @@ std::optional<Hit> Sphere::test_hit(const Ray& ray, const Interval& interval) co
     }
 
     const double sqrtDiscriminant{ std::sqrt(discriminant) };
-    const double t1{ (h + sqrtDiscriminant) / a };
-    const double t2{ (h - sqrtDiscriminant) / a };
-    const double t{ std::min(t1, t2) };
-    if (!interval.contains(t)) {
-        return std::nullopt;
+    double t{ (h - sqrtDiscriminant) / a };
+    if (!interval.surrounds(t)) {
+        t = (h + sqrtDiscriminant) / a;
+        if (!interval.surrounds(t)) {
+            return std::nullopt;
+        }
     }
 
     const Vec3 point{ ray.at(t) };
